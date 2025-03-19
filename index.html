@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI日报 - 每日AI行业热点话题</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-robot"></i> AI日报</h1>
+            <p>每日AI行业热点话题</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="reports-container">
+            <h2>今日AI日报热点</h2>
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>正在获取热点话题...</p>
+            </div>
+            <div id="error" class="error" style="display: none;">
+                <p>获取热点话题失败，请稍后再试。</p>
+            </div>
+            <ul id="reportsList" class="reports-list"></ul>
+            
+            <!-- 标签切换按钮 -->
+            <div class="tab-buttons">
+                <button id="tab1" class="tab-btn active">AI日报</button>
+                <button id="tab2" class="tab-btn">空白页面</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>数据来源: <a href="https://www.aibase.com/zh/daily" target="_blank">AIbase日报</a></p>
+            <p>&copy; <span id="currentYear"></span> AI日报 - 每日AI行业热点话题</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
