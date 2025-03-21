@@ -99,6 +99,171 @@ main {
     border-bottom: none;
 }
 
+/* API测试页面样式 */
+.api-test-container {
+    padding: 20px 0;
+}
+
+.test-section {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.test-section h2 {
+    margin-bottom: 1.5rem;
+    color: #444;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 0.5rem;
+}
+
+.test-form {
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+.form-group select,
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.send-btn,
+.connect-btn,
+.disconnect-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.send-btn {
+    background-color: #6e8efb;
+    color: white;
+}
+
+.send-btn:hover {
+    background-color: #5a7df9;
+}
+
+.send-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.connect-btn {
+    background-color: #4CAF50;
+    color: white;
+    margin-right: 10px;
+}
+
+.connect-btn:hover {
+    background-color: #45a049;
+}
+
+.disconnect-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+.disconnect-btn:hover {
+    background-color: #da190b;
+}
+
+.disconnect-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.connection-status {
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+}
+
+.connection-status span {
+    margin-right: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    background-color: #f5f5f5;
+}
+
+.response-section {
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    padding: 1rem;
+}
+
+.response-section h3 {
+    margin-bottom: 1rem;
+    color: #555;
+}
+
+#httpResponse {
+    background-color: #2d2d2d;
+    color: #fff;
+    padding: 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-family: monospace;
+}
+
+.message-log {
+    background-color: #2d2d2d;
+    color: #fff;
+    padding: 1rem;
+    border-radius: 4px;
+    height: 300px;
+    overflow-y: auto;
+    font-family: monospace;
+}
+
+.message-log .message {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+.message-log .sent {
+    background-color: #2c5282;
+}
+
+.message-log .received {
+    background-color: #2d3748;
+}
+
+.message-log .error {
+    background-color: #c53030;
+}
+
+.message-log .info {
+    background-color: #2b6cb0;
+}
+
 .report-item a {
     color: #333;
     text-decoration: none;

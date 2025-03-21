@@ -13,7 +13,7 @@
             <!-- 标签切换按钮 -->
             <div class="tab-buttons">
                 <button id="tab1" class="tab-btn active">AI日报</button>
-                <button id="tab2" class="tab-btn">空白页面</button>
+                <button id="tab2" class="tab-btn">API测试</button>
             </div>
             <h1><i class="fas fa-robot"></i> AI日报</h1>
             <p>每日AI行业热点话题</p>
@@ -21,7 +21,7 @@
     </header>
 
     <main class="container">
-        <div class="reports-container">
+        <div id="tab1-content" class="reports-container">
             <h2>今日AI日报热点</h2>
             
             <div id="loading" class="loading">
@@ -32,6 +32,64 @@
                 <p>获取热点话题失败，请稍后再试。</p>
             </div>
             <ul id="reportsList" class="reports-list"></ul>
+        </div>
+
+        <div id="tab2-content" class="api-test-container" style="display: none;">
+            <div class="test-section http-test">
+                <h2>HTTP 请求测试</h2>
+                <div class="test-form">
+                    <div class="form-group">
+                        <label for="httpMethod">请求方法：</label>
+                        <select id="httpMethod">
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                            <option value="PUT">PUT</option>
+                            <option value="DELETE">DELETE</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="httpUrl">URL：</label>
+                        <input type="text" id="httpUrl" placeholder="请输入URL">
+                    </div>
+                    <div class="form-group">
+                        <label for="httpHeaders">请求头：</label>
+                        <textarea id="httpHeaders" placeholder="请输入请求头（JSON格式）"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="httpBody">请求体：</label>
+                        <textarea id="httpBody" placeholder="请输入请求体（JSON格式）"></textarea>
+                    </div>
+                    <button id="sendHttpRequest" class="send-btn">发送请求</button>
+                </div>
+                <div class="response-section">
+                    <h3>响应结果</h3>
+                    <pre id="httpResponse"></pre>
+                </div>
+            </div>
+
+            <div class="test-section ws-test">
+                <h2>WebSocket 测试</h2>
+                <div class="test-form">
+                    <div class="form-group">
+                        <label for="wsUrl">WebSocket URL：</label>
+                        <input type="text" id="wsUrl" placeholder="请输入WebSocket URL">
+                    </div>
+                    <div class="connection-status">
+                        <span id="wsStatus">未连接</span>
+                        <button id="wsConnect" class="connect-btn">连接</button>
+                        <button id="wsDisconnect" class="disconnect-btn" disabled>断开</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="wsMessage">消息：</label>
+                        <textarea id="wsMessage" placeholder="请输入要发送的消息"></textarea>
+                    </div>
+                    <button id="wsSend" class="send-btn" disabled>发送消息</button>
+                </div>
+                <div class="response-section">
+                    <h3>消息记录</h3>
+                    <div id="wsMessages" class="message-log"></div>
+                </div>
+            </div>
         </div>
     </main>
 

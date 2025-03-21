@@ -1,4 +1,154 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // 获取DOM元素
+    const tab1Content = document.getElementById('tab1-content');
+    const tab2Content = document.getElementById('tab2-content');
+    const tab1Btn = document.getElementById('tab1');
+    const tab2Btn = document.getElementById('tab2');
+    
+    // 标签切换功能
+    tab1Btn.addEventListener('click', () => {
+        tab1Btn.classList.add('active');
+        tab2Btn.classList.remove('active');
+        tab1Content.style.display = 'block';
+        tab2Content.style.display = 'none';
+        currentTab = 1;
+        displayReports(allReports);
+    });
+    
+    tab2Btn.addEventListener('click', () => {
+        tab2Btn.classList.add('active');
+        tab1Btn.classList.remove('active');
+        tab1Content.style.display = 'none';
+        tab2Content.style.display = 'block';
+        currentTab = 2;
+        displayReports(allReports);
+    });
+    
+    // HTTP请求测试功能
+    const httpMethod = document.getElementById('httpMethod');
+    const httpUrl = document.getElementById('httpUrl');
+    const httpHeaders = document.getElementById('httpHeaders');
+    const httpBody = document.getElementById('httpBody');
+    const sendHttpRequest = document.getElementById('sendHttpRequest');
+    const httpResponse = document.getElementById('httpResponse');
+    
+    sendHttpRequest.addEventListener('click', async () => {
+        try {
+            // 解析请求头
+            let headers = {};
+            try {
+                headers = httpHeaders.value ? JSON.parse(httpHeaders.value) : {};
+            } catch (e) {
+                throw new Error('请求头格式错误，请确保是有效的JSON格式');
+            }
+            
+            // 解析请求体
+            let body = null;
+            if (httpBody.value) {
+                try {
+                    body = JSON.parse(httpBody.value);
+                } catch (e) {
+                    throw new Error('请求体格式错误，请确保是有效的JSON格式');
+                }
+            }
+            
+            // 发送请求
+            const response = await fetch(httpUrl.value, {
+                method: httpMethod.value,
+                headers: headers,
+                body: body ? JSON.stringify(body) : null
+            });
+            
+            // 获取响应
+            const responseText = await response.text();
+            let formattedResponse;
+            try {
+                // 尝试格式化JSON响应
+                const jsonResponse = JSON.parse(responseText);
+                formattedResponse = JSON.stringify(jsonResponse, null, 2);
+            } catch (e) {
+                // 如果不是JSON，直接显示文本
+                formattedResponse = responseText;
+            }
+            
+            // 显示响应结果
+            httpResponse.textContent = `状态码: ${response.status} ${response.statusText}\n\n${formattedResponse}`;
+        } catch (error) {
+            httpResponse.textContent = `错误: ${error.message}`;
+        }
+    });
+    
+    // WebSocket测试功能
+    const wsUrl = document.getElementById('wsUrl');
+    const wsConnect = document.getElementById('wsConnect');
+    const wsDisconnect = document.getElementById('wsDisconnect');
+    const wsMessage = document.getElementById('wsMessage');
+    const wsSend = document.getElementById('wsSend');
+    const wsMessages = document.getElementById('wsMessages');
+    const wsStatus = document.getElementById('wsStatus');
+    
+    let ws = null;
+    
+    // 添加消息到日志
+    function addMessageToLog(message, type) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', type);
+        messageElement.textContent = message;
+        wsMessages.appendChild(messageElement);
+        wsMessages.scrollTop = wsMessages.scrollHeight;
+    }
+    
+    // WebSocket连接
+    wsConnect.addEventListener('click', () => {
+        try {
+            ws = new WebSocket(wsUrl.value);
+            
+            ws.onopen = () => {
+                wsStatus.textContent = '已连接';
+                wsConnect.disabled = true;
+                wsDisconnect.disabled = false;
+                wsSend.disabled = false;
+                addMessageToLog('WebSocket连接已建立', 'info');
+            };
+            
+            ws.onclose = () => {
+                wsStatus.textContent = '未连接';
+                wsConnect.disabled = false;
+                wsDisconnect.disabled = true;
+                wsSend.disabled = true;
+                ws = null;
+                addMessageToLog('WebSocket连接已关闭', 'info');
+            };
+            
+            ws.onerror = (error) => {
+                addMessageToLog(`WebSocket错误: ${error.message}`, 'error');
+            };
+            
+            ws.onmessage = (event) => {
+                addMessageToLog(`收到消息: ${event.data}`, 'received');
+            };
+        } catch (error) {
+            addMessageToLog(`连接错误: ${error.message}`, 'error');
+        }
+    });
+    
+    // WebSocket断开连接
+    wsDisconnect.addEventListener('click', () => {
+        if (ws) {
+            ws.close();
+        }
+    });
+    
+    // WebSocket发送消息
+    wsSend.addEventListener('click', () => {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            const message = wsMessage.value;
+            ws.send(message);
+            addMessageToLog(`发送消息: ${message}`, 'sent');
+            wsMessage.value = '';
+        }
+    });
+
     // 更新页脚年份
     document.getElementById('currentYear').textContent = new Date().getFullYear();
     
@@ -6,8 +156,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const reportsList = document.getElementById('reportsList');
     const loadingElement = document.getElementById('loading');
     const errorElement = document.getElementById('error');
-    const tab1Btn = document.getElementById('tab1');
-    const tab2Btn = document.getElementById('tab2');
     
     // 存储所有报告的数组
     let allReports = [];
@@ -327,16 +475,8 @@ document.addEventListener('DOMContentLoaded', function() {
         tab2Btn.classList.toggle('active', currentTab === 2);
     }
     
-    // 添加标签按钮事件监听
-    tab1Btn.addEventListener('click', function() {
-        currentTab = 1;
-        displayReports(allReports);
-    });
-    
-    tab2Btn.addEventListener('click', function() {
-        currentTab = 2;
-        displayReports(allReports);
-    });
+    // 初始化标签状态
+    updateTabStatus();
     
     // 初始加载
     fetchReports();
