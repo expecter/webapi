@@ -26,13 +26,13 @@ npm install
 npm start
 ```
 
-然后在浏览器中访问 http://localhost:3001
+然后在浏览器中访问 http://localhost:3003
 
 ### WebSocket测试
 
 在API测试标签页中，可以使用WebSocket测试功能：
 
-1. 输入WebSocket URL: `ws://localhost:3001`
+1. 输入WebSocket URL: `ws://localhost:3003`
 2. 点击「连接」按钮
 3. 连接成功后，可以在消息框中输入内容并发送
 4. 服务器会返回确认消息

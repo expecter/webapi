@@ -2,15 +2,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // 获取DOM元素
     const tab1Content = document.getElementById('tab1-content');
     const tab2Content = document.getElementById('tab2-content');
+    const tab3Content = document.getElementById('tab3-content');
     const tab1Btn = document.getElementById('tab1');
     const tab2Btn = document.getElementById('tab2');
+    const tab3Btn = document.getElementById('tab3');
     
     // 标签切换功能
     tab1Btn.addEventListener('click', () => {
         tab1Btn.classList.add('active');
         tab2Btn.classList.remove('active');
+        tab3Btn.classList.remove('active');
         tab1Content.style.display = 'block';
         tab2Content.style.display = 'none';
+        tab3Content.style.display = 'none';
         currentTab = 1;
         displayReports(allReports);
     });
@@ -18,10 +22,26 @@ document.addEventListener('DOMContentLoaded', function() {
     tab2Btn.addEventListener('click', () => {
         tab2Btn.classList.add('active');
         tab1Btn.classList.remove('active');
+        tab3Btn.classList.remove('active');
         tab1Content.style.display = 'none';
         tab2Content.style.display = 'block';
+        tab3Content.style.display = 'none';
         currentTab = 2;
         displayReports(allReports);
+    });
+    
+    tab3Btn.addEventListener('click', () => {
+        tab3Btn.classList.add('active');
+        tab1Btn.classList.remove('active');
+        tab2Btn.classList.remove('active');
+        tab1Content.style.display = 'none';
+        tab2Content.style.display = 'none';
+        tab3Content.style.display = 'block';
+        currentTab = 3;
+        // 如果是第一次点击，加载武将和战法数据
+        if (!generalsLoaded || !tacticsLoaded) {
+            fetchGameData();
+        }
     });
     
     // HTTP请求测试功能
@@ -172,59 +192,24 @@ document.addEventListener('DOMContentLoaded', function() {
             errorElement.style.display = 'none';
             reportsList.innerHTML = '';
             
-            // 使用代理服务器来解决跨域问题
-            // 注意：cors-anywhere现在需要访问https://cors-anywhere.herokuapp.com/corsdemo获取临时访问权限
-            // 尝试使用多个可选的代理服务器
-            const proxyOptions = [
-                'https://api.allorigins.win/raw?url=',
-                'https://thingproxy.freeboard.io/fetch/',
-                'https://api.codetabs.com/v1/proxy?quest=',
-                'https://cors-anywhere.herokuapp.com/',
-                'https://crossorigin.me/',
-                'https://cors-proxy.htmldriven.com/?url=',
-                'https://corsproxy.io/?'
-            ];
-            
-            // 尝试所有代理服务器，直到成功
-            let proxyIndex = 0;
+            // 使用本地代理路由来解决跨域问题
             const targetUrl = 'https://www.aibase.com/zh/daily';
+            const localProxyUrl = `/proxy?url=${encodeURIComponent(targetUrl)}`;
             
-            // 简化请求配置，避免CORS问题
-            const fetchOptions = {
-                // 不设置自定义请求头，避免触发复杂的预检请求
-                mode: 'cors' // 保留CORS模式
-            };
+            console.log('正在请求本地代理:', localProxyUrl);
             
-            // 尝试所有代理服务器，直到成功或全部失败
+            // 使用本地代理发送请求
             let response = null;
-            let lastError = null;
-            
-            for (let i = 0; i < proxyOptions.length; i++) {
-                const proxyUrl = proxyOptions[i];
-                try {
-                    console.log(`尝试使用代理 ${i+1}/${proxyOptions.length}: ${proxyUrl}`);
-                    console.log('正在请求:', proxyUrl + targetUrl);
-                    
-                    response = await fetch(proxyUrl + targetUrl, fetchOptions);
-                    console.log('响应状态:', response.status, response.statusText);
-                    
-                    // 304状态码表示资源未被修改，这不是错误
-                    if (response.ok || response.status === 304) {
-                        console.log(`代理 ${proxyUrl} 请求成功`);
-                        break; // 成功获取响应，跳出循环
-                    } else {
-                        throw new Error(`网络响应不正常: ${response.status} ${response.statusText}`);
-                    }
-                } catch (error) {
-                    console.error(`使用代理 ${proxyUrl} 失败:`, error);
-                    lastError = error;
-                    // 继续尝试下一个代理
+            try {
+                response = await fetch(localProxyUrl);
+                console.log('响应状态:', response.status, response.statusText);
+                
+                if (!response.ok && response.status !== 304) {
+                    throw new Error(`网络响应不正常: ${response.status} ${response.statusText}`);
                 }
-            }
-            
-            // 如果所有代理都失败了
-            if (!response || (!response.ok && response.status !== 304)) {
-                throw new Error(`所有代理服务器都失败: ${lastError?.message || '未知错误'}`);
+            } catch (error) {
+                console.error('使用本地代理失败:', error);
+                throw new Error(`本地代理请求失败: ${error.message}`);
             }
             
             const html = await response.text();
@@ -468,11 +453,403 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // 武将和战法数据相关变量
+    const generalsList = document.getElementById('generalsList');
+    const tacticsList = document.getElementById('tacticsList');
+    const generalsLoadingElement = document.getElementById('generalsLoading');
+    const tacticsLoadingElement = document.getElementById('tacticsLoading');
+    const generalsErrorElement = document.getElementById('generalsError');
+    const tacticsErrorElement = document.getElementById('tacticsError');
+    
+    // 存储武将和战法数据的数组
+    let allGenerals = [];
+    let allTactics = [];
+    let generalsLoaded = false;
+    let tacticsLoaded = false;
+    
+    // 获取武将和战法数据
+    async function fetchGameData() {
+        // 获取武将数据
+        fetchGenerals();
+        // 获取战法数据
+        fetchTactics();
+    }
+    
+    // 获取武将数据
+    async function fetchGenerals() {
+        try {
+            // 显示加载状态
+            generalsLoadingElement.style.display = 'block';
+            generalsErrorElement.style.display = 'none';
+            generalsList.innerHTML = '';
+            
+            // 使用本地代理路由来解决跨域问题
+            const targetUrl = 'https://sgzzlb.lingxigames.com/station/';
+            const localProxyUrl = `/proxy?url=${encodeURIComponent(targetUrl)}`;
+            
+            console.log('正在请求本地代理:', localProxyUrl);
+            
+            // 使用本地代理发送请求
+            let response = null;
+            try {
+                response = await fetch(localProxyUrl);
+                console.log('响应状态:', response.status, response.statusText);
+                
+                if (!response.ok && response.status !== 304) {
+                    throw new Error(`网络响应不正常: ${response.status} ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('使用本地代理失败:', error);
+                throw new Error(`本地代理请求失败: ${error.message}`);
+            }
+            
+            const html = await response.text();
+            
+            // 创建一个DOM解析器来解析HTML
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            // 提取武将信息
+            allGenerals = [];
+            
+            // 尝试多种可能的选择器组合
+            const possibleSelectors = [
+                '.general-list .general-item',
+                '.general-card, .general-info',
+                '.hero-list .hero-item',
+                '.character-list .character-item',
+                '.general-table tr',
+                '.general-grid .grid-item'
+            ];
+            
+            // 尝试每一个选择器
+            for (const selector of possibleSelectors) {
+                const elements = doc.querySelectorAll(selector);
+                console.log(`尝试选择器 ${selector}, 找到 ${elements.length} 个元素`);
+                
+                if (elements.length > 0) {
+                    elements.forEach(element => {
+                        // 尝试提取武将名称和属性
+                        const nameElement = element.querySelector('.name, h3, .title, strong');
+                        if (nameElement) {
+                            const name = nameElement.textContent.trim();
+                            
+                            // 提取武将属性
+                            const attributes = {};
+                            const attributeElements = element.querySelectorAll('.attribute, .stat, .property');
+                            attributeElements.forEach(attrElement => {
+                                const attrName = attrElement.querySelector('.label, .name')?.textContent.trim() || '属性';
+                                const attrValue = attrElement.querySelector('.value')?.textContent.trim() || attrElement.textContent.trim();
+                                attributes[attrName] = attrValue;
+                            });
+                            
+                            // 如果没有找到属性，尝试从其他元素提取
+                            if (Object.keys(attributes).length === 0) {
+                                const statElements = element.querySelectorAll('span, div:not(.name)');
+                                let attrCount = 0;
+                                statElements.forEach(statElement => {
+                                    if (statElement.textContent.trim() && statElement !== nameElement) {
+                                        attributes[`属性${++attrCount}`] = statElement.textContent.trim();
+                                    }
+                                });
+                            }
+                            
+                            // 添加到武将列表
+                            if (name && !allGenerals.some(general => general.name === name)) {
+                                allGenerals.push({ name, attributes });
+                            }
+                        }
+                    });
+                    
+                    // 如果找到了武将，就不再尝试其他选择器
+                    if (allGenerals.length > 0) {
+                        console.log(`使用选择器 ${selector} 成功找到 ${allGenerals.length} 个武将`);
+                        break;
+                    }
+                }
+            }
+            
+            // 如果没有找到武将，使用演示数据
+            if (allGenerals.length === 0) {
+                loadDemoGenerals();
+            } else {
+                // 显示武将列表
+                displayGenerals(allGenerals);
+                generalsLoaded = true;
+            }
+            
+        } catch (error) {
+            console.error('获取武将数据失败:', error);
+            generalsLoadingElement.style.display = 'none';
+            generalsErrorElement.style.display = 'block';
+            generalsErrorElement.querySelector('p').textContent = `获取武将数据失败: ${error.message}`;
+            
+            // 添加演示数据按钮
+            const demoButton = document.createElement('button');
+            demoButton.textContent = '加载演示数据';
+            demoButton.style.margin = '10px 0';
+            demoButton.style.padding = '8px 16px';
+            demoButton.style.backgroundColor = '#6e8efb';
+            demoButton.style.color = 'white';
+            demoButton.style.border = 'none';
+            demoButton.style.borderRadius = '4px';
+            demoButton.style.cursor = 'pointer';
+            demoButton.addEventListener('click', loadDemoGenerals);
+            generalsErrorElement.appendChild(demoButton);
+        }
+    }
+    
+    // 获取战法数据
+    async function fetchTactics() {
+        try {
+            // 显示加载状态
+            tacticsLoadingElement.style.display = 'block';
+            tacticsErrorElement.style.display = 'none';
+            tacticsList.innerHTML = '';
+            
+            // 使用本地代理路由来解决跨域问题
+            const targetUrl = 'https://sgzzlb.lingxigames.com/station/';
+            const localProxyUrl = `/proxy?url=${encodeURIComponent(targetUrl)}`;
+            
+            console.log('正在请求本地代理:', localProxyUrl);
+            
+            // 使用本地代理发送请求
+            let response = null;
+            try {
+                response = await fetch(localProxyUrl);
+                console.log('响应状态:', response.status, response.statusText);
+                
+                if (!response.ok && response.status !== 304) {
+                    throw new Error(`网络响应不正常: ${response.status} ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('使用本地代理失败:', error);
+                throw new Error(`本地代理请求失败: ${error.message}`);
+            }
+            
+            const html = await response.text();
+            
+            // 创建一个DOM解析器来解析HTML
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            // 提取战法信息
+            allTactics = [];
+            
+            // 尝试多种可能的选择器组合
+            const possibleSelectors = [
+                '.tactic-list .tactic-item',
+                '.tactic-card, .tactic-info',
+                '.skill-list .skill-item',
+                '.ability-list .ability-item',
+                '.tactic-table tr',
+                '.tactic-grid .grid-item'
+            ];
+            
+            // 尝试每一个选择器
+            for (const selector of possibleSelectors) {
+                const elements = doc.querySelectorAll(selector);
+                console.log(`尝试选择器 ${selector}, 找到 ${elements.length} 个元素`);
+                
+                if (elements.length > 0) {
+                    elements.forEach(element => {
+                        // 尝试提取战法名称和属性
+                        const nameElement = element.querySelector('.name, h3, .title, strong');
+                        if (nameElement) {
+                            const name = nameElement.textContent.trim();
+                            
+                            // 提取战法属性
+                            const attributes = {};
+                            const attributeElements = element.querySelectorAll('.attribute, .stat, .property');
+                            attributeElements.forEach(attrElement => {
+                                const attrName = attrElement.querySelector('.label, .name')?.textContent.trim() || '属性';
+                                const attrValue = attrElement.querySelector('.value')?.textContent.trim() || attrElement.textContent.trim();
+                                attributes[attrName] = attrValue;
+                            });
+                            
+                            // 如果没有找到属性，尝试从其他元素提取
+                            if (Object.keys(attributes).length === 0) {
+                                const statElements = element.querySelectorAll('span, div:not(.name)');
+                                let attrCount = 0;
+                                statElements.forEach(statElement => {
+                                    if (statElement.textContent.trim() && statElement !== nameElement) {
+                                        attributes[`属性${++attrCount}`] = statElement.textContent.trim();
+                                    }
+                                });
+                            }
+                            
+                            // 添加到战法列表
+                            if (name && !allTactics.some(tactic => tactic.name === name)) {
+                                allTactics.push({ name, attributes });
+                            }
+                        }
+                    });
+                    
+                    // 如果找到了战法，就不再尝试其他选择器
+                    if (allTactics.length > 0) {
+                        console.log(`使用选择器 ${selector} 成功找到 ${allTactics.length} 个战法`);
+                        break;
+                    }
+                }
+            }
+            
+            // 如果没有找到战法，使用演示数据
+            if (allTactics.length === 0) {
+                loadDemoTactics();
+            } else {
+                // 显示战法列表
+                displayTactics(allTactics);
+                tacticsLoaded = true;
+            }
+            
+        } catch (error) {
+            console.error('获取战法数据失败:', error);
+            tacticsLoadingElement.style.display = 'none';
+            tacticsErrorElement.style.display = 'block';
+            tacticsErrorElement.querySelector('p').textContent = `获取战法数据失败: ${error.message}`;
+            
+            // 添加演示数据按钮
+            const demoButton = document.createElement('button');
+            demoButton.textContent = '加载演示数据';
+            demoButton.style.margin = '10px 0';
+            demoButton.style.padding = '8px 16px';
+            demoButton.style.backgroundColor = '#6e8efb';
+            demoButton.style.color = 'white';
+            demoButton.style.border = 'none';
+            demoButton.style.borderRadius = '4px';
+            demoButton.style.cursor = 'pointer';
+            demoButton.addEventListener('click', loadDemoTactics);
+            tacticsErrorElement.appendChild(demoButton);
+        }
+    }
+    
+    // 加载演示武将数据
+    function loadDemoGenerals() {
+        // 演示武将数据
+        const demoGenerals = [
+            { name: '曹操', attributes: { '武力': '90', '智力': '95', '统率': '96', '政治': '90' } },
+            { name: '刘备', attributes: { '武力': '82', '智力': '85', '统率': '92', '政治': '95' } },
+            { name: '孙权', attributes: { '武力': '80', '智力': '90', '统率': '92', '政治': '88' } },
+            { name: '关羽', attributes: { '武力': '97', '智力': '80', '统率': '94', '政治': '75' } },
+            { name: '张飞', attributes: { '武力': '96', '智力': '70', '统率': '89', '政治': '65' } },
+            { name: '赵云', attributes: { '武力': '95', '智力': '85', '统率': '90', '政治': '80' } },
+            { name: '吕布', attributes: { '武力': '100', '智力': '70', '统率': '85', '政治': '60' } },
+            { name: '诸葛亮', attributes: { '武力': '65', '智力': '100', '统率': '90', '政治': '95' } },
+            { name: '周瑜', attributes: { '武力': '80', '智力': '98', '统率': '92', '政治': '85' } },
+            { name: '司马懿', attributes: { '武力': '70', '智力': '97', '统率': '88', '政治': '90' } }
+        ];
+        
+        allGenerals = demoGenerals;
+        displayGenerals(demoGenerals);
+        generalsLoaded = true;
+        generalsLoadingElement.style.display = 'none';
+        generalsErrorElement.style.display = 'none';
+    }
+    
+    // 加载演示战法数据
+    function loadDemoTactics() {
+        // 演示战法数据
+        const demoTactics = [
+            { name: '火计', attributes: { '类型': '谋略', '消耗': '3', '效果': '对敌军造成大量火焰伤害' } },
+            { name: '水计', attributes: { '类型': '谋略', '消耗': '3', '效果': '降低敌军移动速度' } },
+            { name: '突击', attributes: { '类型': '武力', '消耗': '2', '效果': '提高我方部队攻击力' } },
+            { name: '强袭', attributes: { '类型': '武力', '消耗': '4', '效果': '对敌军造成大量物理伤害' } },
+            { name: '鼓舞', attributes: { '类型': '统率', '消耗': '2', '效果': '提高我方部队士气' } },
+            { name: '军威', attributes: { '类型': '统率', '消耗': '3', '效果': '降低敌军士气' } },
+            { name: '伏兵', attributes: { '类型': '谋略', '消耗': '4', '效果': '在指定位置埋伏部队' } },
+            { name: '疾行', attributes: { '类型': '统率', '消耗': '1', '效果': '提高我方部队移动速度' } },
+            { name: '箭雨', attributes: { '类型': '武力', '消耗': '3', '效果': '对敌军范围造成伤害' } },
+            { name: '智谋', attributes: { '类型': '谋略', '消耗': '2', '效果': '提高我方部队防御力' } }
+        ];
+        
+        allTactics = demoTactics;
+        displayTactics(demoTactics);
+        tacticsLoaded = true;
+        tacticsLoadingElement.style.display = 'none';
+        tacticsErrorElement.style.display = 'none';
+    }
+    
+    // 显示武将列表
+    function displayGenerals(generals) {
+        generalsList.innerHTML = '';
+        
+        generals.forEach(general => {
+            const li = document.createElement('li');
+            li.className = 'data-item';
+            
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'data-name';
+            nameDiv.textContent = general.name;
+            
+            const attributesDiv = document.createElement('div');
+            attributesDiv.className = 'data-attributes';
+            
+            for (const [key, value] of Object.entries(general.attributes)) {
+                const attrSpan = document.createElement('span');
+                attrSpan.className = 'attribute';
+                attrSpan.textContent = `${key}: ${value}`;
+                attributesDiv.appendChild(attrSpan);
+            }
+            
+            li.appendChild(nameDiv);
+            li.appendChild(attributesDiv);
+            generalsList.appendChild(li);
+        });
+    }
+    
+    // 显示战法列表
+    function displayTactics(tactics) {
+        tacticsList.innerHTML = '';
+        
+        tactics.forEach(tactic => {
+            const li = document.createElement('li');
+            li.className = 'data-item';
+            
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'data-name';
+            nameDiv.textContent = tactic.name;
+            
+            const attributesDiv = document.createElement('div');
+            attributesDiv.className = 'data-attributes';
+            
+            for (const [key, value] of Object.entries(tactic.attributes)) {
+                const attrSpan = document.createElement('span');
+                attrSpan.className = 'attribute';
+                attrSpan.textContent = `${key}: ${value}`;
+                attributesDiv.appendChild(attrSpan);
+            }
+            
+            li.appendChild(nameDiv);
+            li.appendChild(attributesDiv);
+            tacticsList.appendChild(li);
+        });
+    }
+    
     // 更新标签状态
     function updateTabStatus() {
-        // 更新标签按钮状态
-        tab1Btn.classList.toggle('active', currentTab === 1);
-        tab2Btn.classList.toggle('active', currentTab === 2);
+        // 根据当前标签更新UI状态
+        if (currentTab === 1) {
+            tab1Btn.classList.add('active');
+            tab2Btn.classList.remove('active');
+            tab3Btn.classList.remove('active');
+            tab1Content.style.display = 'block';
+            tab2Content.style.display = 'none';
+            tab3Content.style.display = 'none';
+        } else if (currentTab === 2) {
+            tab2Btn.classList.add('active');
+            tab1Btn.classList.remove('active');
+            tab3Btn.classList.remove('active');
+            tab1Content.style.display = 'none';
+            tab2Content.style.display = 'block';
+            tab3Content.style.display = 'none';
+        } else if (currentTab === 3) {
+            tab3Btn.classList.add('active');
+            tab1Btn.classList.remove('active');
+            tab2Btn.classList.remove('active');
+            tab1Content.style.display = 'none';
+            tab2Content.style.display = 'none';
+            tab3Content.style.display = 'block';
+        }
     }
     
     // 初始化标签状态
@@ -480,6 +857,4 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 初始加载
     fetchReports();
-    // 初始化标签状态
-    updateTabStatus();
 });
