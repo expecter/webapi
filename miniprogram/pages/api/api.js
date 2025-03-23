@@ -138,7 +138,7 @@ Page({
       },
       fail: function(err) {
         console.error('WebSocket连接创建失败', err);
-        self.addWsMessage('系统', '连接创建失败: ' + JSON.stringify(err));
+        self.addWsMessage('system', '连接创建失败: ' + JSON.stringify(err));
       }
     });
     
@@ -150,7 +150,7 @@ Page({
         wsStatus: '已连接',
         socketTask: socketTask
       });
-      self.addWsMessage('系统', '连接已建立');
+      self.addWsMessage('system', '连接已建立');
     });
     
     socketTask.onClose(function() {
@@ -160,17 +160,17 @@ Page({
         wsStatus: '未连接',
         socketTask: null
       });
-      self.addWsMessage('系统', '连接已关闭');
+      self.addWsMessage('system', '连接已关闭');
     });
     
     socketTask.onError(function(err) {
       console.error('WebSocket错误', err);
-      self.addWsMessage('系统', '连接错误: ' + JSON.stringify(err));
+      self.addWsMessage('system', '连接错误: ' + JSON.stringify(err));
     });
     
     socketTask.onMessage(function(res) {
       console.log('收到WebSocket消息', res);
-      self.addWsMessage('接收', res.data);
+      self.addWsMessage('receive', res.data);
     });
   },
   
@@ -201,7 +201,7 @@ Page({
     this.data.socketTask.send({
       data: this.data.wsMessage,
       success: function() {
-        self.addWsMessage('发送', self.data.wsMessage);
+        self.addWsMessage('send', self.data.wsMessage);
         self.setData({
           wsMessage: ''
         });

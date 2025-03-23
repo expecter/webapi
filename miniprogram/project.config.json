@@ -1,8 +1,5 @@
 {
   "description": "项目配置文件",
-  "packOptions": {
-    "ignore": []
-  },
   "setting": {
     "bundle": false,
     "userConfirmedBundleSwitch": false,
@@ -23,47 +20,30 @@
     "nodeModules": false,
     "enhance": true,
     "useMultiFrameRuntime": true,
-    "useApiHook": true,
-    "useApiHostProcess": true,
     "showShadowRootInWxmlPanel": true,
     "packNpmManually": false,
     "enableEngineNative": false,
     "packNpmRelationList": [],
     "minifyWXSS": true,
     "showES6CompileOption": false,
-    "minifyWXML": true
+    "minifyWXML": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    },
+    "ignoreUploadUnusedFiles": true
   },
   "compileType": "miniprogram",
+  "condition": {},
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  },
   "libVersion": "2.19.4",
-  "appid": "wx123456789",
-  "projectname": "AI日报",
-  "debugOptions": {
-    "hidedInDevtools": []
+  "packOptions": {
+    "ignore": [],
+    "include": []
   },
-  "scripts": {},
-  "staticServerOptions": {
-    "baseURL": "",
-    "servePath": ""
-  },
-  "isGameTourist": false,
-  "condition": {
-    "search": {
-      "list": []
-    },
-    "conversation": {
-      "list": []
-    },
-    "game": {
-      "list": []
-    },
-    "plugin": {
-      "list": []
-    },
-    "gamePlugin": {
-      "list": []
-    },
-    "miniprogram": {
-      "list": []
-    }
-  }
+  "appid": "wxda00a0f879fdc8c6"
 }

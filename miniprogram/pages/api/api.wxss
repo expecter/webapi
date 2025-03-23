@@ -95,6 +95,11 @@
   border-radius: 8rpx;
   padding: 0 20rpx;
   box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  background-color: #f9f9f9;-radius: 8rpx;
+  padding: 0 20rpx;
+  box-sizing: border-box;
   font-size: 28rpx;
   background-color: #f9f9f9;
 }
@@ -185,18 +190,18 @@
   word-break: break-all;
 }
 
-.message.系统 {
+.message.system {
   background-color: #e0e0e0;
   color: #666;
 }
 
-.message.发送 {
+.message.send {
   background-color: #e3f2fd;
   color: #2196f3;
   text-align: right;
 }
 
-.message.接收 {
+.message.receive {
   background-color: #f1f8e9;
   color: #4caf50;
 }
@@ -206,4 +211,10 @@
   width: 100%;
   height: 80rpx;
   border: 2rpx solid #e0e0e0;
-  border
+  border-radius: 8rpx;
+  padding: 0 20rpx;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  background-color: #f9f9f9;
+}
