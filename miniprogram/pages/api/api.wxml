@@ -1,0 +1,87 @@
+<!--api.wxml-->
+<view class="container">
+  <view class="header">
+    <view class="header-content">
+      <view class="header-title">
+        <text class="icon-api"></text> API测试
+      </view>
+      <view class="header-subtitle">HTTP和WebSocket请求测试工具</view>
+    </view>
+  </view>
+
+  <view class="api-test-container">
+    <!-- HTTP测试部分 -->
+    <view class="test-section http-test">
+      <view class="title">HTTP 请求测试</view>
+      <view class="test-form">
+        <view class="form-group">
+          <text class="form-label">请求方法：</text>
+          <picker bindchange="onHttpMethodChange" value="{{httpMethodIndex}}" range="{{httpMethods}}">
+            <view class="picker">
+              {{httpMethods[httpMethodIndex]}}
+            </view>
+          </picker>
+        </view>
+        
+        <view class="form-group">
+          <text class="form-label">URL：</text>
+          <input class="form-input" type="text" placeholder="请输入URL" bindinput="onHttpUrlInput" value="{{httpUrl}}" />
+        </view>
+        
+        <view class="form-group">
+          <text class="form-label">请求头：</text>
+          <textarea class="form-textarea" placeholder="请输入请求头（JSON格式）" bindinput="onHttpHeadersInput" value="{{httpHeaders}}"></textarea>
+        </view>
+        
+        <view class="form-group">
+          <text class="form-label">请求体：</text>
+          <textarea class="form-textarea" placeholder="请输入请求体（JSON格式）" bindinput="onHttpBodyInput" value="{{httpBody}}"></textarea>
+        </view>
+        
+        <button class="btn send-btn" bindtap="sendHttpRequest">发送请求</button>
+      </view>
+      
+      <view class="response-section">
+        <view class="subtitle">响应结果</view>
+        <scroll-view scroll-y class="response-content">
+          <text>{{httpResponse}}</text>
+        </scroll-view>
+      </view>
+    </view>
+    
+    <!-- WebSocket测试部分 -->
+    <view class="test-section ws-test">
+      <view class="title">WebSocket 测试</view>
+      <view class="test-form">
+        <view class="form-group">
+          <text class="form-label">WebSocket URL：</text>
+          <input class="form-input" type="text" placeholder="请输入WebSocket URL" bindinput="onWsUrlInput" value="{{wsUrl}}" />
+        </view>
+        
+        <view class="connection-status">
+          <text class="status-text">{{wsStatus}}</text>
+          <button class="btn connect-btn" bindtap="wsConnect" disabled="{{wsConnected}}">连接</button>
+          <button class="btn disconnect-btn" bindtap="wsDisconnect" disabled="{{!wsConnected}}">断开</button>
+        </view>
+        
+        <view class="form-group">
+          <text class="form-label">消息：</text>
+          <textarea class="form-textarea" placeholder="请输入要发送的消息" bindinput="onWsMessageInput" value="{{wsMessage}}" disabled="{{!wsConnected}}"></textarea>
+        </view>
+        
+        <button class="btn send-btn" bindtap="wsSend" disabled="{{!wsConnected}}">发送消息</button>
+      </view>
+      
+      <view class="response-section">
+        <view class="subtitle">消息记录</view>
+        <scroll-view scroll-y class="message-log">
+          <block wx:for="{{wsMessages}}" wx:key="index">
+            <view class="message {{item.type}}">
+              {{item.content}}
+            </view>
+          </block>
+        </scroll-view>
+      </view>
+    </view>
+  </view>
+</view>

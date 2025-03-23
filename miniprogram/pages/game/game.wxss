@@ -1,0 +1,260 @@
+/* game.wxss */
+
+/* 页面容器 */
+.container {
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 头部样式 */
+.header {
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  color: #fff;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  margin-bottom: 20rpx;
+}
+
+.header-content {
+  padding: 20rpx 0;
+}
+
+.header-title {
+  font-size: 40rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+  display: flex;
+  align-items: center;
+}
+
+.icon-game::before {
+  content: '🎮';
+  margin-right: 10rpx;
+}
+
+.header-subtitle {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+/* 游戏数据容器 */
+.game-container {
+  padding: 20rpx 30rpx;
+}
+
+/* 标签页 */
+.tabs {
+  display: flex;
+  background-color: #fff;
+  border-radius: 12rpx;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  font-size: 28rpx;
+  color: #666;
+  position: relative;
+}
+
+.tab.active {
+  color: #6e8efb;
+  font-weight: bold;
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 25%;
+  width: 50%;
+  height: 4rpx;
+  background-color: #6e8efb;
+  border-radius: 2rpx;
+}
+
+/* 搜索框 */
+.search-box {
+  margin-bottom: 20rpx;
+}
+
+.search-input {
+  width: 100%;
+  height: 80rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 40rpx;
+  padding: 0 30rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+  background-color: #f9f9f9;
+}
+
+/* 加载中 */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx 0;
+}
+
+.spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid rgba(110, 142, 251, 0.2);
+  border-left-color: #6e8efb;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20rpx;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 错误提示 */
+.error {
+  text-align: center;
+  padding: 40rpx 0;
+  color: #ff4d4f;
+}
+
+/* 内容区域 */
+.content-section {
+  background-color: #fff;
+  border-radius: 12rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 筛选选项 */
+.filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.filter-item {
+  margin-right: 30rpx;
+  margin-bottom: 10rpx;
+  display: flex;
+  align-items: center;
+}
+
+.filter-label {
+  font-size: 26rpx;
+  color: #666;
+  margin-right: 10rpx;
+}
+
+.picker {
+  font-size: 26rpx;
+  color: #333;
+  padding: 6rpx 20rpx;
+  background-color: #f0f0f0;
+  border-radius: 30rpx;
+}
+
+/* 列表样式 */
+.list {
+  margin-top: 20rpx;
+}
+
+.list-item {
+  padding: 20rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+  display: flex;
+  align-items: center;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+/* 武将项样式 */
+.general-item {
+  position: relative;
+}
+
+.general-info {
+  flex: 1;
+}
+
+.general-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.general-attrs {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.general-attr {
+  font-size: 24rpx;
+  color: #666;
+  margin-right: 20rpx;
+  margin-bottom: 6rpx;
+}
+
+/* 战法项样式 */
+.tactic-item {
+  position: relative;
+}
+
+.tactic-info {
+  flex: 1;
+}
+
+.tactic-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.tactic-attrs {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tactic-attr {
+  font-size: 24rpx;
+  color: #666;
+  margin-right: 20rpx;
+  margin-bottom: 6rpx;
+}
+
+/* 品质颜色 */
+.quality-SSR .general-name {
+  color: #f5a623;
+}
+
+.quality-SR .general-name {
+  color: #8a2be2;
+}
+
+.quality-R .general-name {
+  color: #4a90e2;
+}
+
+.quality-N .general-name {
+  color: #50e3c2;
+}
+
+/* 空列表提示 */
+.empty-list {
+  text-align: center;
+  padding: 40rpx 0;
+  color: #999;
+}

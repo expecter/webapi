@@ -1,0 +1,116 @@
+<!--game.wxml-->
+<view class="container">
+  <view class="header">
+    <view class="header-content">
+      <view class="header-title">
+        <text class="icon-game"></text> 武将战法
+      </view>
+      <view class="header-subtitle">三国武将与战法数据库</view>
+    </view>
+  </view>
+
+  <view class="game-container">
+    <!-- 标签页切换 -->
+    <view class="tabs">
+      <view class="tab {{activeTab === 'generals' ? 'active' : ''}}" bindtap="switchTab" data-tab="generals">武将</view>
+      <view class="tab {{activeTab === 'tactics' ? 'active' : ''}}" bindtap="switchTab" data-tab="tactics">战法</view>
+    </view>
+    
+    <!-- 搜索框 -->
+    <view class="search-box">
+      <input type="text" class="search-input" placeholder="搜索武将或战法..." bindinput="onSearchInput" value="{{searchKeyword}}" />
+    </view>
+    
+    <!-- 加载中 -->
+    <view class="loading" wx:if="{{loading}}">
+      <view class="spinner"></view>
+      <text>正在加载数据...</text>
+    </view>
+    
+    <!-- 错误提示 -->
+    <view class="error" wx:if="{{error}}">
+      <text>{{errorMsg}}</text>
+    </view>
+    
+    <!-- 武将列表 -->
+    <view class="content-section" wx:if="{{!loading && !error && activeTab === 'generals'}}">
+      <!-- 筛选选项 -->
+      <view class="filter-options">
+        <view class="filter-item">
+          <text class="filter-label">品质：</text>
+          <picker bindchange="onQualityChange" value="{{qualityOptions.indexOf(filterOptions.generals.quality)}}" range="{{qualityOptions}}">
+            <view class="picker">{{filterOptions.generals.quality}}</view>
+          </picker>
+        </view>
+        <view class="filter-item">
+          <text class="filter-label">国家：</text>
+          <picker bindchange="onCountryChange" value="{{countryOptions.indexOf(filterOptions.generals.country)}}" range="{{countryOptions}}">
+            <view class="picker">{{filterOptions.generals.country}}</view>
+          </picker>
+        </view>
+      </view>
+      
+      <!-- 武将列表 -->
+      <view class="list generals-list">
+        <block wx:for="{{getFilteredGenerals()}}" wx:key="id">
+          <view class="list-item general-item quality-{{item.quality}}" bindtap="viewGeneralDetail" data-id="{{item.id}}">
+            <view class="general-info">
+              <view class="general-name">{{item.name}}</view>
+              <view class="general-attrs">
+                <view class="general-attr">品质: {{item.quality}}</view>
+                <view class="general-attr">国家: {{item.country}}</view>
+                <view class="general-attr">攻击: {{item.attack}}</view>
+                <view class="general-attr">防御: {{item.defense}}</view>
+              </view>
+            </view>
+          </view>
+        </block>
+        
+        <!-- 空列表提示 -->
+        <view class="empty-list" wx:if="{{getFilteredGenerals().length === 0}}">
+          <text>没有找到符合条件的武将</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 战法列表 -->
+    <view class="content-section" wx:if="{{!loading && !error && activeTab === 'tactics'}}">
+      <!-- 筛选选项 -->
+      <view class="filter-options">
+        <view class="filter-item">
+          <text class="filter-label">品质：</text>
+          <picker bindchange="onQualityChange" value="{{qualityOptions.indexOf(filterOptions.tactics.quality)}}" range="{{qualityOptions}}">
+            <view class="picker">{{filterOptions.tactics.quality}}</view>
+          </picker>
+        </view>
+        <view class="filter-item">
+          <text class="filter-label">类型：</text>
+          <picker bindchange="onTypeChange" value="{{typeOptions.indexOf(filterOptions.tactics.type)}}" range="{{typeOptions}}">
+            <view class="picker">{{filterOptions.tactics.type}}</view>
+          </picker>
+        </view>
+      </view>
+      
+      <!-- 战法列表 -->
+      <view class="list tactics-list">
+        <block wx:for="{{getFilteredTactics()}}" wx:key="id">
+          <view class="list-item tactic-item quality-{{item.quality}}" bindtap="viewTacticDetail" data-id="{{item.id}}">
+            <view class="tactic-info">
+              <view class="tactic-name">{{item.name}}</view>
+              <view class="tactic-attrs">
+                <view class="tactic-attr">品质: {{item.quality}}</view>
+                <view class="tactic-attr">类型: {{item.type}}</view>
+                <view class="tactic-attr">描述: {{item.description}}</view>
+              </view>
+            </view>
+          </view>
+        </block>
+        
+        <!-- 空列表提示 -->
+        <view class="empty-list" wx:if="{{getFilteredTactics().length === 0}}">
+          <text>没有找到符合条件的战法</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

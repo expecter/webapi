@@ -1,0 +1,209 @@
+/* api.wxss */
+
+/* 页面容器 */
+.container {
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 头部样式 */
+.header {
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  color: #fff;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  margin-bottom: 20rpx;
+}
+
+.header-content {
+  padding: 20rpx 0;
+}
+
+.header-title {
+  font-size: 40rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+  display: flex;
+  align-items: center;
+}
+
+.icon-api {
+  display: inline-block;
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 10rpx;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.header-subtitle {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+/* API测试容器 */
+.api-test-container {
+  padding: 20rpx 30rpx;
+}
+
+/* 测试区块 */
+.test-section {
+  background-color: #fff;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 30rpx;
+  color: #444;
+  border-bottom: 2rpx solid #f0f0f0;
+  padding-bottom: 15rpx;
+}
+
+.subtitle {
+  font-size: 28rpx;
+  font-weight: bold;
+  margin: 20rpx 0;
+  color: #666;
+}
+
+/* 表单样式 */
+.test-form {
+  margin-bottom: 30rpx;
+}
+
+.form-group {
+  margin-bottom: 20rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  padding: 0 20rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+  background-color: #f9f9f9;
+}
+
+.form-textarea {
+  width: 100%;
+  height: 200rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  padding: 20rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+  background-color: #f9f9f9;
+}
+
+/* 按钮样式 */
+.btn {
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  padding: 16rpx 30rpx;
+  margin: 10rpx 0;
+}
+
+.send-btn {
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  color: #fff;
+  border: none;
+}
+
+.connect-btn {
+  background-color: #4caf50;
+  color: #fff;
+  margin-right: 20rpx;
+}
+
+.disconnect-btn {
+  background-color: #f44336;
+  color: #fff;
+}
+
+/* 响应结果区域 */
+.response-section {
+  margin-top: 30rpx;
+}
+
+.response-content {
+  background-color: #f5f5f5;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  padding: 20rpx;
+  height: 300rpx;
+  font-family: monospace;
+  font-size: 24rpx;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* WebSocket连接状态 */
+.connection-status {
+  display: flex;
+  align-items: center;
+  margin: 20rpx 0;
+}
+
+.status-text {
+  margin-right: 20rpx;
+  font-size: 28rpx;
+  color: #666;
+  background-color: #f0f0f0;
+  padding: 10rpx 20rpx;
+  border-radius: 30rpx;
+}
+
+/* WebSocket消息记录 */
+.message-log {
+  background-color: #f5f5f5;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  padding: 20rpx;
+  height: 300rpx;
+}
+
+.message {
+  padding: 10rpx 15rpx;
+  margin-bottom: 10rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  word-break: break-all;
+}
+
+.message.系统 {
+  background-color: #e0e0e0;
+  color: #666;
+}
+
+.message.发送 {
+  background-color: #e3f2fd;
+  color: #2196f3;
+  text-align: right;
+}
+
+.message.接收 {
+  background-color: #f1f8e9;
+  color: #4caf50;
+}
+
+/* 选择器样式 */
+.picker {
+  width: 100%;
+  height: 80rpx;
+  border: 2rpx solid #e0e0e0;
+  border

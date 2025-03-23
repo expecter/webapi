@@ -1,0 +1,41 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/api/api",
+    "pages/game/game"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#6e8efb",
+    "navigationBarTitleText": "AI日报",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#999",
+    "selectedColor": "#6e8efb",
+    "backgroundColor": "#fff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "AI日报",
+        "iconPath": "images/icon-news.png",
+        "selectedIconPath": "images/icon-news-active.png"
+      },
+      {
+        "pagePath": "pages/api/api",
+        "text": "API测试",
+        "iconPath": "images/icon-api.png",
+        "selectedIconPath": "images/icon-api-active.png"
+      },
+      {
+        "pagePath": "pages/game/game",
+        "text": "武将战法",
+        "iconPath": "images/icon-game.png",
+        "selectedIconPath": "images/icon-game-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

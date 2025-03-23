@@ -1,0 +1,74 @@
+/* index.wxss */
+.header {
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  color: white;
+  padding: 40rpx 0 30rpx;
+  text-align: center;
+  box-shadow: 0 4rpx 10rpx rgba(0,0,0,0.1);
+  border-radius: 0 0 40rpx 40rpx;
+  margin-bottom: 30rpx;
+}
+
+.header-title {
+  font-size: 50rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+}
+
+.icon-robot::before {
+  content: '🤖';
+  margin-right: 10rpx;
+}
+
+.header-subtitle {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+.reports-container {
+  background-color: white;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.05);
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.reports-list {
+  margin-top: 20rpx;
+}
+
+.report-item {
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.report-item:last-child {
+  border-bottom: none;
+}
+
+.report-title {
+  font-size: 30rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.report-date {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.empty-list {
+  text-align: center;
+  padding: 40rpx 0;
+  color: #999;
+}
+
+.footer {
+  text-align: center;
+  padding: 30rpx 0;
+  color: #999;
+  font-size: 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
